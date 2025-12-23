@@ -15,15 +15,16 @@ async function trendingStocks(n) {
     symbolToName[s.symbol] = s.name;
   }
 
-  // sort by market cap desc
+  // sort by market cap DESC
   const topStocks = marketCapsData
     .sort((a, b) => b["market-cap"] - a["market-cap"])
     .slice(0, n);
 
   const symbols = topStocks.map(s => s.symbol);
-
   const pricesRes = await fetch(
-    `https://api.frontendexpert.io/api/fe/stock-prices?symbols=${JSON.stringify(symbols)}`
+    `https://api.frontendexpert.io/api/fe/stock-prices?symbols=${encodeURIComponent(
+      JSON.stringify(symbols)
+    )}`
   );
   const pricesData = await pricesRes.json();
 
@@ -35,6 +36,7 @@ async function trendingStocks(n) {
 
   return topStocks.map(stock => {
     const priceInfo = symbolToPrice[stock.symbol];
+
     return {
       symbol: stock.symbol,
       name: symbolToName[stock.symbol],
